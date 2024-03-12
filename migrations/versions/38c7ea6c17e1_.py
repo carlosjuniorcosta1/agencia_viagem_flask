@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c28df9925635
+Revision ID: 38c7ea6c17e1
 Revises: 
-Create Date: 2024-03-10 22:44:21.084684
+Create Date: 2024-03-11 20:25:38.441755
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c28df9925635'
+revision = '38c7ea6c17e1'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,6 +23,8 @@ def upgrade():
     sa.Column('name', sa.String(length=200), nullable=True),
     sa.Column('email', sa.String(length=100), nullable=True),
     sa.Column('cpf', sa.String(length=12), nullable=True),
+    sa.Column('cellphone', sa.String(length=50), nullable=True),
+    sa.Column('registration_date', sa.Date(), nullable=True),
     sa.PrimaryKeyConstraint('client_id')
     )
     op.create_table('users_table',
@@ -30,13 +32,14 @@ def upgrade():
     sa.Column('name', sa.String(length=200), nullable=True),
     sa.Column('password', sa.String(length=250), nullable=True),
     sa.Column('email', sa.String(length=100), nullable=True),
+    sa.Column('cellphone', sa.String(length=50), nullable=True),
     sa.PrimaryKeyConstraint('user_id')
     )
     op.create_table('packages_table',
     sa.Column('package_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('client_id', sa.Integer(), nullable=True),
-    sa.Column('origin', sa.String(length=100), nullable=True),
-    sa.Column('destin', sa.String(length=100), nullable=True),
+    sa.Column('origin', sa.String(length=150), nullable=True),
+    sa.Column('destination', sa.String(length=150), nullable=True),
     sa.Column('departure_date', sa.Date(), nullable=True),
     sa.Column('return_date', sa.Date(), nullable=True),
     sa.Column('registration_date', sa.Date(), nullable=True),

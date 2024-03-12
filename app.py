@@ -14,8 +14,8 @@ app.register_blueprint(clients_bp)
 
 Migrate(app, db)
 if __name__ == "__main__":
-    pacote1 = Package(1, 'Rio de Janeiro', "Belo Horizonte", "02/02/2024", 
-                      "12/03/2024", 1200)
+    pacote1 = Package(1, 'Rio de Janeiro', "Belo Horizonte", "02/02/2024", "12/03/2024", 1200, "C,A,J")
+    # cliente1 = Client('Gustavo', 'gustavo@gmail.com')
     with app.app_context():
         db.session.add(pacote1)
         db.session.commit()       
