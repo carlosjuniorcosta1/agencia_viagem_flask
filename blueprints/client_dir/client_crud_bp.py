@@ -1,5 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, jsonify, request
 from config.config import db
 from models.client import Client
 
@@ -61,6 +60,11 @@ def delete_client():
     client_to_delete_json = client_to_delete.to_json()
     return jsonify(data = client_to_delete_json, message="Client deleted successfully")
 
+
+
+
+
+    
 
 
 

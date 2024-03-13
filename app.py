@@ -4,21 +4,19 @@ from models.client import Client
 from models.package import Package
 from models.user import User
 from blueprints.client_dir.client_crud_bp import clients_bp
+from blueprints.client_dir.client_filter_bp import clients_filter_bp
 from flask_migrate import Migrate 
-
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 app.register_blueprint(clients_bp)
+app.register_blueprint(clients_filter_bp)
 
 Migrate(app, db)
 if __name__ == "__main__":
-    pacote1 = Package(1, 'Rio de Janeiro', "Belo Horizonte", "02/02/2024", "12/03/2024", 1200, "C,A,J")
-    # cliente1 = Client('Gustavo', 'gustavo@gmail.com')
-    with app.app_context():
-        db.session.add(pacote1)
-        db.session.commit()       
+
+        
     app.run()
 
 

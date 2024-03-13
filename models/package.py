@@ -15,7 +15,7 @@ class Package(db.Model):
     registration_date = db.Column(db.Date)
     price = db.Column(db.Float)
     meals = db.Column(db.String(10), nullable= True)
-
+    
     def __init__(self, client_id, origin, destination, departure_date, 
                  return_date, price, meals):
         self.client_id = client_id
@@ -56,7 +56,8 @@ class Package(db.Model):
             "departure_date": self.departure_date,
             "return_date": self.return_date, 
             "registration_date": self.registration_date,
-            "price": self.price
+            "price": self.price,
+            "meals": self.meals if self.meals is not None else None
         }
 
     def __repr__(self):
