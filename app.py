@@ -3,7 +3,7 @@ from config.config import Config, db
 from models.client import Client
 from models.package import Package
 from models.user import User
-from blueprints.client_dir.client_bp import clients_bp
+from blueprints.client_dir.client_crud_bp import clients_bp
 from flask_migrate import Migrate 
 
 

@@ -14,7 +14,7 @@ class Package(db.Model):
     return_date = db.Column(db.Date)
     registration_date = db.Column(db.Date)
     price = db.Column(db.Float)
-    meals = db.Column(db.String(10))
+    meals = db.Column(db.String(10), nullable= True)
 
     def __init__(self, client_id, origin, destination, departure_date, 
                  return_date, price, meals):
@@ -29,13 +29,11 @@ class Package(db.Model):
             raise ValueError(f"Error. You entered >> {meals} <<, but the only valid meals are: C, A, J or just ALL")
         else:
             self.meals = ','.join(self.valid_meals(meals))
-
     
     def fill_dates(self, date_dd_mm_yyyy):
         day, month, year = map(int, date_dd_mm_yyyy.split('/'))
         form_date = datetime(year, month, day)
-        return form_date
-    
+        return form_date    
     
     def valid_meals(self, meals):
         valid_meals = {"C", "A", "J", "ALL"}

@@ -29,18 +29,3 @@ class Client(db.Model):
         "registration_date": self.registration_date.strftime("%d/%m/%Y") if self.registration_date is not None else None, 
         "cellphone": self.cellphone if self.cellphone is not None else None } 
         
-        
-    def from_json(self, data_json):
-        name = data_json.get('name')
-        email = data_json.get('email')
-        cpf = data_json.get('cpf') if data_json.get('cpf') is not None else None,
-        registration_date = data_json('registration_date') if data_json('registration_date') is not None else None
-        if registration_date:
-            registration_date = datetime.strptime(registration_date, "%d/%m/%Y").date()
-
-        #cellphone
-        data_from_json = Client(name=name, email=email,
-                               registration_date= registration_date)
-        return data_from_json
-
-
