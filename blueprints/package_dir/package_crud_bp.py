@@ -4,7 +4,6 @@ from config.config import db
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 
-
 package_crud_bp = Blueprint('package_crud_bp', __name__)
 
 @package_crud_bp.route('/pacotes', methods= ["GET"])
@@ -39,6 +38,9 @@ def add_package():
         return jsonify(message=f"You should provide {", ".join(missing_fields)}")
     if return_date < departure_date:
         return jsonify(message="The return date must be after the departure date")
+    if meals and meals not in ["A", "C", "J", "ALL"]:
+        return jsonify(message="Invalid value for meals. It should be 'C' (breakfast), 'A', (lunch), 'J' (dinner) or 'ALL' (all inclusve)")
+        
     new_package = Package(client_id=client_id, origin=origin, 
                           destination=destination, departure_date=departure_date,
                          return_date=return_date, price=price, meals=meals,
