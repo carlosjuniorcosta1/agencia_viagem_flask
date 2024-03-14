@@ -25,7 +25,6 @@ def filter_client():
             registration_date = datetime.strptime(registration_date, '%d/%m/%Y').date()            
             registration_date_formatted = registration_date.strftime('%Y-%m-%d')
             cl_query = Client.query.filter(Client.registration_date == registration_date_formatted)
-
         except ValueError:
             return jsonify(message="Invalid format date. Enter 'dd/mm/YYYY' format."), 400
     cl_query_json = [x.to_json() for x in cl_query]

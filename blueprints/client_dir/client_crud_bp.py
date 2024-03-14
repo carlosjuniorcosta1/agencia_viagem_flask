@@ -58,7 +58,7 @@ def delete_client():
         return jsonify(message="Client not found"), 404
     db.session.delete(client_to_delete)
     client_to_delete_json = client_to_delete.to_json()
-    return jsonify(data = client_to_delete_json, message="Client deleted successfully")
+    return jsonify(data = client_to_delete_json, message="Client deleted successfully"), 200
 
 
 

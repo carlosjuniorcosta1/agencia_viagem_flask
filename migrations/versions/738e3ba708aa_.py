@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 38c7ea6c17e1
+Revision ID: 738e3ba708aa
 Revises: 
-Create Date: 2024-03-11 20:25:38.441755
+Create Date: 2024-03-13 19:42:52.898659
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '38c7ea6c17e1'
+revision = '738e3ba708aa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,13 +37,15 @@ def upgrade():
     )
     op.create_table('packages_table',
     sa.Column('package_id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('client_id', sa.Integer(), nullable=True),
+    sa.Column('client_id', sa.Integer(), nullable=False),
     sa.Column('origin', sa.String(length=150), nullable=True),
     sa.Column('destination', sa.String(length=150), nullable=True),
     sa.Column('departure_date', sa.Date(), nullable=True),
     sa.Column('return_date', sa.Date(), nullable=True),
     sa.Column('registration_date', sa.Date(), nullable=True),
     sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('meals', sa.String(length=10), nullable=True),
+    sa.Column('accommodation', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['client_id'], ['clients_table.client_id'], ),
     sa.PrimaryKeyConstraint('package_id')
     )
