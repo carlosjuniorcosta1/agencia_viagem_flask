@@ -21,6 +21,9 @@ class User(db.Model):
         encripted_password = bcrypt.generate_password_hash(non_encripted_password)
         return encripted_password    
 
+    def check_password(self, attempted_password):
+        bcrypt = Bcrypt()
+        return bcrypt.check_password_hash(self.password, attempted_password)
     def __repr__(self):
         return f"Usuário {self.name}, email {self.email}"
     
@@ -28,7 +31,6 @@ class User(db.Model):
         return {
             "user_id": self.user_id,
             "name": self.name, 
-            "password": self.password,
             "email": self.email,
             "cellphone": self.cellphone            
         }
