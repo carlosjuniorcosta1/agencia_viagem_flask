@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from config.config import db 
 from sqlalchemy import ForeignKey
 from datetime import datetime
-from enum import Enum
 from flask import jsonify
 
 class Package(db.Model):
@@ -17,41 +16,27 @@ class Package(db.Model):
     price = db.Column(db.Float, nullable=True)
     meals = db.Column(db.String(10), nullable= True)
     accommodation = db.Column(db.Boolean, nullable = True)
+    travelers = db.Column(db.SmallInteger, default=1)
+    clients = db.relationship("Client", backref="clients")
 
     def __init__(self, client_id, origin, destination, departure_date, 
-                 return_date, price, meals, accomodation):
+                 return_date, price, meals, accomodation, travelers):
         self.client_id = client_id
         self.origin = origin
         self.destination = destination
-        self.departure_date = self.fill_dates(departure_date)
-        self.return_date = self.fill_dates(return_date)
+        self.departure_date = datetime.strptime(departure_date, "%d/%m/%Y")
+        self.return_date = datetime.strptime(return_date, "%d/%m/%Y") if return_date else None,
         self.registration_date = datetime.now().date()
         self.price = price
         self.meals = self.valid_meals(meals)
         self.accommodation = accomodation
-
-        self.validate_return_date()
+        self.travelers = travelers  
     
-    def fill_dates(self, date_dd_mm_yyyy):
-        day, month, year = map(int, date_dd_mm_yyyy.split('/'))
-        form_date = datetime(year, month, day)
-        return form_date
-     
-    def validate_return_date(self):
-        if self.return_date < self.departure_date:
-            raise ValueError("The return date must be after the departure date") 
-        elif self.return_date > self.departure_date:
-            return self.return_date         
-      
-    
-    def valid_meals(self, meals):
-        if not meals:
-            return "nao"  
+    def valid_meals(self, meals):       
         if meals:
             valid_meals = {"C", "A", "J", "ALL"}
             meal_set = set(meals.split(','))
             if "ALL" in meal_set:
-                print("verdadeiro")
                 return "ALL"
             else:
                 meal_list = list(meal_set)
@@ -60,7 +45,7 @@ class Package(db.Model):
                     return meal_list
                 else:
                     raise ValueError("The options for meals are just: C (breakfast), A (lunch), J (dinner) or ALL (all inclusive)")
-  
+            
     def to_json(self):
         return {
             "package_id": self.package_id,
@@ -71,7 +56,9 @@ class Package(db.Model):
             "registration_date": self.registration_date.strftime("%d/%m/%Y") if self.registration_date is not None else None,
             "price": self.price,
             "meals": self.meals if self.meals is not None else None,
-            "accomodation": self.accommodation if self.accommodation is not None else None
+            "accomodation": self.accommodation if self.accommodation is not None else None,
+            "origin": self.origin,
+            "travelers": self.travelers 
         }
 
     def __repr__(self):

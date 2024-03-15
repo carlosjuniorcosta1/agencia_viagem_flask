@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 738e3ba708aa
+Revision ID: 406dd7597eb3
 Revises: 
-Create Date: 2024-03-13 19:42:52.898659
+Create Date: 2024-03-14 22:41:51.115095
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '738e3ba708aa'
+revision = '406dd7597eb3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,14 +38,15 @@ def upgrade():
     op.create_table('packages_table',
     sa.Column('package_id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('client_id', sa.Integer(), nullable=False),
-    sa.Column('origin', sa.String(length=150), nullable=True),
-    sa.Column('destination', sa.String(length=150), nullable=True),
-    sa.Column('departure_date', sa.Date(), nullable=True),
+    sa.Column('origin', sa.String(length=150), nullable=False),
+    sa.Column('destination', sa.String(length=150), nullable=False),
+    sa.Column('departure_date', sa.Date(), nullable=False),
     sa.Column('return_date', sa.Date(), nullable=True),
     sa.Column('registration_date', sa.Date(), nullable=True),
     sa.Column('price', sa.Float(), nullable=True),
     sa.Column('meals', sa.String(length=10), nullable=True),
     sa.Column('accommodation', sa.Boolean(), nullable=True),
+    sa.Column('travelers', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['client_id'], ['clients_table.client_id'], ),
     sa.PrimaryKeyConstraint('package_id')
     )

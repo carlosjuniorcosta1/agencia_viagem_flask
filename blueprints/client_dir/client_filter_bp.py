@@ -27,7 +27,8 @@ def filter_client():
             cl_query = Client.query.filter(Client.registration_date == registration_date_formatted)
         except ValueError:
             return jsonify(message="Invalid format date. Enter 'dd/mm/YYYY' format."), 400
-    cl_query_json = [x.to_json() for x in cl_query]
+    cl_query_obj = cl_query.all()
+    cl_query_json = [x.to_json() for x in cl_query_obj]
     return jsonify(data=cl_query_json, message="Results")
 
     

@@ -31,6 +31,7 @@ def add_package():
     return_date = package_data.get('return_date')
     price = package_data.get('price')
     meals = package_data.get('meals')
+    travelers = package_data.get('travelers')
     accomodation = package_data.get('accomodation')
     mandatory_fields = ["client_id", "origin", "destination", "departure_date", "return_date", "accomodation"]
     missing_fields = [x for x in mandatory_fields if x not in package_data]
@@ -39,17 +40,18 @@ def add_package():
     if return_date < departure_date:
         return jsonify(message="The return date must be after the departure date"), 400
     if meals and meals not in ["A", "C", "J", "ALL"]:
-        return jsonify(message="Invalid value for meals. It should be 'C' (breakfast), 'A', (lunch), 'J' (dinner) or 'ALL' (all inclusve)"),400 
-        
+        return jsonify(message="Invalid value for meals. It should be 'C' (breakfast), 'A', (lunch), 'J' (dinner) or 'ALL' (all inclusive)"),400 
+       
     new_package = Package(client_id=client_id, origin=origin, 
                           destination=destination, departure_date=departure_date,
                          return_date=return_date, price=price, meals=meals,
-                         accomodation=accomodation)
+                         accomodation=accomodation, travelers=travelers)
     if new_package:
         db.session.add(new_package)
         db.session.commit()
         new_package_json = new_package.to_json()
         return jsonify(data=new_package_json, message="New package added"), 201
+    
 
 @package_crud_bp.route('/pacote', methods=["PUT"])
 def update_package():
@@ -60,7 +62,7 @@ def update_package():
         package_id = data_package.get('package_id')
         updated_package = Package.query.get(package_id)
     for key, value in data_package.items():
-        if key != "package_id" and key != "departure_date" and key != "return_date":
+        if key != "package_id" and key != "departure_date" and key != "return_date" and key != 'meals':
             setattr(updated_package, key, value)
     if "departure_date" or "return_date" in data_package:
         new_departure_date = data_package.get('departure_date')
@@ -70,10 +72,14 @@ def update_package():
         if new_return_date_form < new_departure_date_form:
             return jsonify(message="The return date must be after than the departure date "), 400
         updated_package.departure_date = new_departure_date_form.strftime('%Y/%m/%d')
-        updated_package.return_date = new_return_date_form.strftime("%Y/%m/%d")      
-
+        updated_package.return_date = new_return_date_form.strftime("%Y/%m/%d") 
+    if 'meals' in data_package:    
+        new_meals = data_package.get('meals')
+        if new_meals not in ["C", "A", "J", "ALL"]:
+            return jsonify(message="Invalid value for updating meals. Values should be 'C' (breakfast), 'A', (lunch), 'J' (dinner) or 'ALL' (all inclusive)"),400 
+        updated_package.meals = new_meals
     db.session.commit()
-    return jsonify(message="Package updated successfully"), 200
+    return jsonify(message="Package updated successfully", data=updated_package.to_json()), 200
 
 @package_crud_bp.route('/pacote', methods= ["DELETE"])
 def delete_package():

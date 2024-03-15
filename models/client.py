@@ -7,8 +7,8 @@ class Client(db.Model):
     client_id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     name = db.Column(db.String(200))
     email = db.Column(db.String(100))
-    cpf = db.Column(db.String(12), nullable=True)
-    cellphone = db.Column(db.String(50), nullable = True)
+    cpf = db.Column(db.String(12), nullable=True, default="preencher")
+    cellphone = db.Column(db.String(50), nullable = True, default = "preencher")
     registration_date = db.Column(db.Date)
     packages = db.relationship("Package", backref="client", lazy="dynamic")
 
