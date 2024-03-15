@@ -9,19 +9,13 @@ packages_filter_bp = Blueprint("packages_filter_bp", __name__)
 def packages_filter():
     package_query = Package.query 
     for key in request.args.keys():
-        value = request.args.get(key)
-        if hasattr(Package, key):
+        value = request.args.get(key)    
+        if hasattr(Package, key):                
             field = getattr(Package, key)
-            package_query = package_query.filter(field==value)
-
-    # destination_f = request.args.get('destination')
-    # origin_f = request.args.get('origin')
-
-    # if destination_f:
-    #     package_query = package_query.filter(Package.destination.ilike(f"%{destination_f}%"))
-    # if origin_f:
-    #     package_query = package_query.filter(Package.origin.ilike(f"%{origin_f}%"))
-
+            if key == "origin" or key == "destination":
+                package_query = package_query.filter(field.ilike(f"%{value}%"))
+            else:
+                package_query = package_query.filter(field==value)    
     package_query_obj = package_query.all()
     package_query_json = []
     for package in package_query_obj:

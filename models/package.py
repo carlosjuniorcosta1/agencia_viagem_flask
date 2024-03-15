@@ -16,21 +16,23 @@ class Package(db.Model):
     price = db.Column(db.Float, nullable=True)
     meals = db.Column(db.String(10), nullable= True)
     accommodation = db.Column(db.Boolean, nullable = True)
-    travelers = db.Column(db.SmallInteger, default=1)
-    clients = db.relationship("Client", backref="clients")
+    kids = db.Column(db.SmallInteger, default = 0)
+    adults = db.Column(db.SmallInteger, default = 1)
+    client = db.relationship("Client", lazy="joined")      
 
     def __init__(self, client_id, origin, destination, departure_date, 
-                 return_date, price, meals, accomodation, travelers):
+                 return_date, price, meals, accomodation, kids, adults):
         self.client_id = client_id
         self.origin = origin
         self.destination = destination
-        self.departure_date = datetime.strptime(departure_date, "%d/%m/%Y")
-        self.return_date = datetime.strptime(return_date, "%d/%m/%Y") if return_date else None,
+        self.departure_date = departure_date
+        self.return_date = return_date if return_date else None 
         self.registration_date = datetime.now().date()
         self.price = price
         self.meals = self.valid_meals(meals)
         self.accommodation = accomodation
-        self.travelers = travelers  
+        self.kids = kids
+        self.adults = adults 
     
     def valid_meals(self, meals):       
         if meals:
@@ -58,7 +60,9 @@ class Package(db.Model):
             "meals": self.meals if self.meals is not None else None,
             "accomodation": self.accommodation if self.accommodation is not None else None,
             "origin": self.origin,
-            "travelers": self.travelers 
+            "kids": self.kids,
+            "adults": self.adults
+
         }
 
     def __repr__(self):

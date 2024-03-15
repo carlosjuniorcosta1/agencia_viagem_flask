@@ -29,23 +29,27 @@ def add_package():
     destination = package_data.get('destination')
     departure_date = package_data.get('departure_date')    
     return_date = package_data.get('return_date')
+    departure_date_obj = datetime.strptime(departure_date, "%d/%m/%Y")
+    return_date_obj = datetime.strptime(return_date, "%d/%m/%Y")
     price = package_data.get('price')
     meals = package_data.get('meals')
-    travelers = package_data.get('travelers')
     accomodation = package_data.get('accomodation')
+    kids = package_data.get('kids')
+    adults = package_data.get('adults')
+
     mandatory_fields = ["client_id", "origin", "destination", "departure_date", "return_date", "accomodation"]
     missing_fields = [x for x in mandatory_fields if x not in package_data]
     if missing_fields:
         return jsonify(message=f"You should provide {", ".join(missing_fields)}"), 400
-    if return_date < departure_date:
+    if return_date_obj < departure_date_obj:
         return jsonify(message="The return date must be after the departure date"), 400
     if meals and meals not in ["A", "C", "J", "ALL"]:
         return jsonify(message="Invalid value for meals. It should be 'C' (breakfast), 'A', (lunch), 'J' (dinner) or 'ALL' (all inclusive)"),400 
        
     new_package = Package(client_id=client_id, origin=origin, 
-                          destination=destination, departure_date=departure_date,
-                         return_date=return_date, price=price, meals=meals,
-                         accomodation=accomodation, travelers=travelers)
+                          destination=destination, departure_date=departure_date_obj.strftime("%Y/%m/%d"),
+                         return_date=return_date_obj.strftime("%Y/%m/%d"), price=price, meals=meals,
+                         accomodation=accomodation, kids=kids, adults=adults)
     if new_package:
         db.session.add(new_package)
         db.session.commit()

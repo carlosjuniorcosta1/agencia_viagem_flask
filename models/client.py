@@ -10,7 +10,7 @@ class Client(db.Model):
     cpf = db.Column(db.String(12), nullable=True, default="preencher")
     cellphone = db.Column(db.String(50), nullable = True, default = "preencher")
     registration_date = db.Column(db.Date)
-    packages = db.relationship("Package", backref="client", lazy="dynamic")
+    packages = db.relationship("Package", viewonly = True, lazy="joined")
 
     def __init__(self, name, email):
         self.name = name 
