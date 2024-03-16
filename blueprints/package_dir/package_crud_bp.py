@@ -36,8 +36,9 @@ def add_package():
     accomodation = package_data.get('accomodation')
     kids = package_data.get('kids')
     adults = package_data.get('adults')
+    travel_class = package_data.get('travel_class')
 
-    mandatory_fields = ["client_id", "origin", "destination", "departure_date", "return_date", "accomodation"]
+    mandatory_fields = ["client_id", "origin", "destination", "departure_date", "return_date", "accomodation", "travel_class"]
     missing_fields = [x for x in mandatory_fields if x not in package_data]
     if missing_fields:
         return jsonify(message=f"You should provide {", ".join(missing_fields)}"), 400
@@ -45,11 +46,12 @@ def add_package():
         return jsonify(message="The return date must be after the departure date"), 400
     if meals and meals not in ["A", "C", "J", "ALL"]:
         return jsonify(message="Invalid value for meals. It should be 'C' (breakfast), 'A', (lunch), 'J' (dinner) or 'ALL' (all inclusive)"),400 
-       
+    if travel_class not in ["economica", "executiva", 'primeira_classe']:
+        return jsonify(message="Invalid value for travel_class. The available values are: 'economica', 'executiva', 'primeira_classe'"), 400
     new_package = Package(client_id=client_id, origin=origin, 
                           destination=destination, departure_date=departure_date_obj.strftime("%Y/%m/%d"),
                          return_date=return_date_obj.strftime("%Y/%m/%d"), price=price, meals=meals,
-                         accomodation=accomodation, kids=kids, adults=adults)
+                         accomodation=accomodation, kids=kids, adults=adults, travel_class=travel_class)
     if new_package:
         db.session.add(new_package)
         db.session.commit()
@@ -60,15 +62,16 @@ def add_package():
 @package_crud_bp.route('/pacote', methods=["PUT"])
 def update_package():
     data_package = request.get_json()
-    if "package_id"  not in data_package:
-        return jsonify(message="You must provide a package_id in order to update a package")
-    else:
-        package_id = data_package.get('package_id')
-        updated_package = Package.query.get(package_id)
+    package_id = data_package.get('package_id')
+    if not package_id:
+        return jsonify(message="You must provide a package_id in order to update a package"), 400
+    
+    updated_package = Package.query.get(package_id)
+    
     for key, value in data_package.items():
-        if key != "package_id" and key != "departure_date" and key != "return_date" and key != 'meals':
+        if key != "package_id" and key != "departure_date" and key != "return_date" and key != 'meals' and key != 'travel_class':
             setattr(updated_package, key, value)
-    if "departure_date" or "return_date" in data_package:
+    if "departure_date" in data_package or "return_date" in data_package:
         new_departure_date = data_package.get('departure_date')
         new_return_date = data_package.get('return_date')
         new_departure_date_form = datetime.strptime(new_departure_date, "%d/%m/%Y")
@@ -81,7 +84,14 @@ def update_package():
         new_meals = data_package.get('meals')
         if new_meals not in ["C", "A", "J", "ALL"]:
             return jsonify(message="Invalid value for updating meals. Values should be 'C' (breakfast), 'A', (lunch), 'J' (dinner) or 'ALL' (all inclusive)"),400 
-        updated_package.meals = new_meals
+        else:
+            updated_package.meals = new_meals
+    if 'travel_class' in data_package:
+        new_travel_class = data_package.get('travel_class')
+        if new_travel_class not in ['economica', 'executiva', 'primeira_classe']:
+            return jsonify(message="Invalid value for travel_class. The available values are: 'economica', 'executiva', 'primeira_classe'")
+        else:   
+            updated_package.travel_class = new_travel_class
     db.session.commit()
     return jsonify(message="Package updated successfully", data=updated_package.to_json()), 200
 

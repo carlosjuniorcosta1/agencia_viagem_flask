@@ -18,10 +18,11 @@ class Package(db.Model):
     accommodation = db.Column(db.Boolean, nullable = True)
     kids = db.Column(db.SmallInteger, default = 0)
     adults = db.Column(db.SmallInteger, default = 1)
+    travel_class = db.Column(db.String(20), default='economica')
     client = db.relationship("Client", lazy="joined")      
 
     def __init__(self, client_id, origin, destination, departure_date, 
-                 return_date, price, meals, accomodation, kids, adults):
+                 return_date, price, meals, accomodation, kids, adults, travel_class):
         self.client_id = client_id
         self.origin = origin
         self.destination = destination
@@ -32,7 +33,8 @@ class Package(db.Model):
         self.meals = self.valid_meals(meals)
         self.accommodation = accomodation
         self.kids = kids
-        self.adults = adults 
+        self.adults = adults
+        self.travel_class = travel_class
     
     def valid_meals(self, meals):       
         if meals:
@@ -61,7 +63,8 @@ class Package(db.Model):
             "accomodation": self.accommodation if self.accommodation is not None else None,
             "origin": self.origin,
             "kids": self.kids,
-            "adults": self.adults
+            "adults": self.adults,
+            "travel_class": self.travel_class
 
         }
 

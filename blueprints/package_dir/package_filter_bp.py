@@ -12,7 +12,7 @@ def packages_filter():
         value = request.args.get(key)    
         if hasattr(Package, key):                
             field = getattr(Package, key)
-            if key == "origin" or key == "destination":
+            if key == "origin" or key == "destination" or key == "travel_class":
                 package_query = package_query.filter(field.ilike(f"%{value}%"))
             else:
                 package_query = package_query.filter(field==value)    
